@@ -9,5 +9,6 @@ mkdir build
 cd build
 cmake ..
 sudo cmake --build . --target install
+sudo ldconfig
 
 popd

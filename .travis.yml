@@ -1,0 +1,27 @@
+language: python
+sudo: required
+dist: trusty
+git:
+  depth: 5
+matrix:
+  include:
+  - python: 2.7
+  - python: 3.5
+  - python: 3.6
+before_install:
+  - travis/install_pandoc.sh
+script:
+  - python setup.py sdist
+  - pip install dist/`ls dist | grep -i -E '\.(gz)$' | head -1`
+  - pushd /
+  - python -c "import sys; import pickle_blosc; sys.exit(pickle_blosc.test())"
+  - popd
+notifications:
+  email: false
+deploy:
+  provider: pypi
+  skip_upload_docs: true
+  user: dhorta
+  on:
+    distributions: sdist
+    repo: glimix/pickle-blosc

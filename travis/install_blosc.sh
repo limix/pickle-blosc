@@ -8,6 +8,6 @@ pushd c-blosc-1.11.2
 mkdir build
 cd build
 cmake ..
-cmake --build . --config Release
+cmake --build . --target install
 
 popd

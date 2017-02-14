@@ -20,7 +20,7 @@ def setup_package():
     pytest_runner = ['pytest-runner'] if needs_pytest else []
 
     setup_requires = [] + pytest_runner
-    install_requires = ['blosc>=0.17']
+    install_requires = ['python-blosc>=1.3.2']
     tests_require = ['pytest']
 
     metadata = dict(

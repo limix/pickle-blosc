@@ -10,6 +10,7 @@ matrix:
   - python: 3.6
 before_install:
   - travis/install_pandoc.sh
+  - travis/install_blosc.sh
 script:
   - python setup.py sdist
   - pip install dist/`ls dist | grep -i -E '\.(gz)$' | head -1`

@@ -1,6 +1,7 @@
 language: python
 sudo: required
 dist: trusty
+cache: ccache
 git:
   depth: 5
 matrix:

@@ -4,10 +4,13 @@ from __future__ import unicode_literals as _
 from pkg_resources import DistributionNotFound as _DistributionNotFound
 from pkg_resources import get_distribution as _get_distribution
 
+from ._core import pickle, unpickle
+
 try:
     __version__ = _get_distribution('pickle_blosc').version
 except _DistributionNotFound:
     __version__ = 'unknown'
+
 
 def test():
     r"""Tests this package.
@@ -31,4 +34,4 @@ def test():
     return return_code
 
 
-__all__ = ['__version__', 'test']
+__all__ = ['__version__', 'test', 'pickle', 'unpickle']

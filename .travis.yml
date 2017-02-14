@@ -10,21 +10,22 @@ matrix:
   - python: 3.5
   - python: 3.6
 before_install:
-  - travis/install_pandoc.sh
-  - travis/install_blosc.sh
-  - travis/install_python_blosc.sh
+- travis/install_pandoc.sh
+- travis/install_blosc.sh
+- travis/install_python_blosc.sh
 script:
-  - python setup.py sdist
-  - pip install dist/`ls dist | grep -i -E '\.(gz)$' | head -1`
-  - pushd /
-  - python -c "import sys; import pickle_blosc; sys.exit(pickle_blosc.test())"
-  - popd
+- python setup.py sdist
+- pip install dist/`ls dist | grep -i -E '\.(gz)$' | head -1`
+- pushd /
+- python -c "import sys; import pickle_blosc; sys.exit(pickle_blosc.test())"
+- popd
 notifications:
   email: false
 deploy:
   provider: pypi
-  skip_upload_docs: true
   user: dhorta
+  password:
+    secure: ZGtVG0VdimEyGmze0nEC4eexVpSvuTWolqPHcG/SBES55m+rCNmMfkMILQRWFqQFEMcctLbKKHomNcIuwpA4EmYwVtCEzb1fnU+OS8o12yUpG5p6RXVE7kRZtYvxKsDpWT2OmOFeLSqsng3CCXybBIqrGi8fUlAqKiHeCHs5n4Js12gmGUYDCPjloMDTvJ/gAhVD6dVyUREssuP0ANBHuM8iniwf/qC67Y2XVvzkQvzjSHU7NwH1fuogoEQvnmO96fa5JwdDum5uqmKt3dNfQuwpIbRKE29ALzbVeZocawCAcMEx6amPXMQF1aLNhXDOOG6mtfbkO7eSQYTKrcECMJGS24WeBo6pWHbFzbWX+/I8GqZ+Uzr0Uwo2F4m45YraFQ6dscHSYJuP7Cl/6d6MsRVcrtYf1nC3jlFxQFODd+d5Tkcwghgh2xHFGa+SXpp5uAFZrR68XaYVH5pR3zbdsrh6KvWRlkekPOhqLXCgod9HpMA0jXxb9IoxffJWxHE7yBYtqzkNN6Peg9X68j+JsmCLSp107A6jdeHxuPtnzYGjzR4C1etKo3f+xXAaFmCN50v0VRn0LBmfLYyKU+4Q0murMY0aErNAhv1igFkCYZIMoahxS/2ZDffZ/uuiJqAB16tpNSjuqo1BfdO3Hz7eK4y7PjBLsuyLktc6Dsw99cA=
   on:
-    distributions: sdist
+    distributions: sdist bdist_wheel
     repo: glimix/pickle-blosc

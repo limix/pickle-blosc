@@ -1,6 +1,6 @@
 #/bin/sh -f
 
-https://github.com/Blosc/python-blosc/archive/v1.5.0.tar.gz
+wget https://github.com/Blosc/python-blosc/archive/v1.5.0.tar.gz
 tar xzf v1.5.0.tar.gz
 
 pushd python-blosc-1.5.0

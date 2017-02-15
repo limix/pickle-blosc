@@ -25,5 +25,7 @@ def test_pickle_blosc():
             _test_it(folder)
 
     except ImportError:
+        import tempfile
+
         folder = tempfile.mkdtemp()
         _test_it(folder)

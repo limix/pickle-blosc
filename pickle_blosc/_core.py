@@ -9,6 +9,7 @@ except ImportError:
 
 
 def pickle(obj, filepath):
+    """Pickle and compress."""
     arr = pkl.dumps(obj, -1)
     with open(filepath, 'wb') as f:
         s = 0
@@ -20,11 +21,11 @@ def pickle(obj, filepath):
 
 
 def unpickle(filepath):
+    """Decompress and unpickle."""
     arr = []
     with open(filepath, 'rb') as f:
-        while True:
-            carr = f.read(blosc.MAX_BUFFERSIZE)
-            if len(carr) == 0:
-                break
+        carr = f.read(blosc.MAX_BUFFERSIZE)
+        while len(carr) > 0:
             arr.append(blosc.decompress(carr))
+            carr = f.read(blosc.MAX_BUFFERSIZE)
     return pkl.loads(b"".join(arr))

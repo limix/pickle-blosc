@@ -1,6 +1,8 @@
-from tempfile import TemporaryDirectory
+
+
 from os.path import join
 from pickle_blosc import pickle, unpickle
+
 
 
 class A(object):
@@ -9,8 +11,19 @@ class A(object):
 
 
 def test_pickle_blosc():
-    with TemporaryDirectory() as folder:
+
+    def _test_it(folder):
         fp = join(folder, 'a.pkl')
         pickle(A(10), fp)
         a = unpickle(fp)
-    assert a.value == 10
+        assert a.value == 10
+
+    try:
+        from tempfile import TemporaryDirectory
+
+        with TemporaryDirectory() as folder:
+            _test_it(folder)
+
+    except ImportError:
+        folder = tempfile.mkdtemp()
+        _test_it(folder)

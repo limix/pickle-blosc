@@ -19,7 +19,7 @@ pushd c-blosc-1.16.3
 mkdir build
 cd build
 cmake ..
-sudo cmake --build . --target install
-sudo ldconfig
+cmake --build . --target install
+ldconfig
 
 popd

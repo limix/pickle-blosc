@@ -6,17 +6,25 @@ Read and write Pickle files using Blosc compression.
 
 ## Install
 
-The recommended way of installing it is via
-[conda](http://conda.pydata.org/docs/index.html)
-
-```bash
-conda install -c conda-forge pickle-blosc
-```
-
-An alternative way would be via pip
+From terminal, enter
 
 ```
 pip install pickle-blosc
+```
+
+## Usage
+
+```python
+>>> from pickle_blosc import pickle, unpickle
+>>>
+>>> class A(object):
+>>>    def __init__(self, value):
+>>>        self.value = value
+>>>
+>>> pickle(A(10), "filename.pkl")
+>>> a = unpickle("filename.pkl")
+>>> print(a.value)
+10
 ```
 
 ## Running the tests

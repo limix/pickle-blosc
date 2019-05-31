@@ -35,6 +35,19 @@ script:
     sudo mkdir -p /usr/local/man
     sudo chown -R "${USER}:admin" /usr/local/man
   fi
+- |
+  if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
+    # Compile and install blosc
+    curl -L -O https://github.com/Blosc/c-blosc/archive/v1.16.3.tar.gz
+    tar xzf v1.16.3.tar.gz
+    pushd c-blosc-1.16.3
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build . --target install
+    ldconfig
+    popd
+  fi
 - git clean -xdf
 - bash <(curl -fsSL https://raw.githubusercontent.com/horta/ci/master/travis.sh)
 - python -m pip install cibuildwheel>=0.10.0

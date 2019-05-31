@@ -1,31 +1,61 @@
 language: python
-sudo: required
-dist: trusty
-cache: ccache
-git:
-  depth: 5
+python: 3.6
+env:
+  global:
+  - PKG_NAME=pandas_plink
+  - CIBW_SKIP="cp27-* cp34-* cp35-*"
+  - CIBW_BEFORE_BUILD="python -m pip install numpy && python -m pip install pandas"
+  - CIBW_TEST_COMMAND="python -c \"import $PKG_NAME; import sys; sys.exit($PKG_NAME.test())\""
 matrix:
   include:
-  - python: 2.7
-  - python: 3.5
-  - python: 3.6
-before_install:
-- travis/install_pandoc.sh
-- travis/install_blosc.sh
-- travis/install_python_blosc.sh
+    - sudo: required
+      services:
+        - docker
+    - os: osx
+      language: generic
+      before_install:
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew unlink python2
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew install python3 zlib
+        - export PATH=$(brew --prefix)/bin:$(brew --prefix)/sbin:$PATH
+        - export PATH="/usr/local/opt/python/libexec/bin:$PATH"
+        - ln -s $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
+        - ln -s $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
+        - hash -r
+        - python -m pip install --upgrade pip setuptools wheel
+addons:
+  apt:
+    packages:
+    - libffi-dev
+    - libffi6
+    - cmake
 script:
-- python setup.py sdist
-- pip install dist/`ls dist | grep -i -E '\.(gz)$' | head -1`
-- pushd /
-- python -c "import sys; import pickle_blosc; sys.exit(pickle_blosc.test())"
-- popd
+- |
+  if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
+    sudo mkdir -p /usr/local/man
+    sudo chown -R "${USER}:admin" /usr/local/man
+  fi
+- git clean -xdf
+- bash <(curl -fsSL https://raw.githubusercontent.com/horta/ci/master/travis.sh)
+- python -m pip install cibuildwheel>=0.10.0
+- cibuildwheel --output-dir wheelhouse
+- |
+  if [ "${TRAVIS_TAG:-}" != "" ]; then
+    python -m pip install twine
+    python -m twine upload --skip-existing wheelhouse/*
+  fi
 notifications:
-  email: false
+  email:
+    recipients:
+    - danilo.horta@pm.me
+    on_success: never
+    on_failure: always
 deploy:
-  provider: pypi
-  user: dhorta
+  provider:     pypi
+  user:         dhorta
   password:
-    secure: ZGtVG0VdimEyGmze0nEC4eexVpSvuTWolqPHcG/SBES55m+rCNmMfkMILQRWFqQFEMcctLbKKHomNcIuwpA4EmYwVtCEzb1fnU+OS8o12yUpG5p6RXVE7kRZtYvxKsDpWT2OmOFeLSqsng3CCXybBIqrGi8fUlAqKiHeCHs5n4Js12gmGUYDCPjloMDTvJ/gAhVD6dVyUREssuP0ANBHuM8iniwf/qC67Y2XVvzkQvzjSHU7NwH1fuogoEQvnmO96fa5JwdDum5uqmKt3dNfQuwpIbRKE29ALzbVeZocawCAcMEx6amPXMQF1aLNhXDOOG6mtfbkO7eSQYTKrcECMJGS24WeBo6pWHbFzbWX+/I8GqZ+Uzr0Uwo2F4m45YraFQ6dscHSYJuP7Cl/6d6MsRVcrtYf1nC3jlFxQFODd+d5Tkcwghgh2xHFGa+SXpp5uAFZrR68XaYVH5pR3zbdsrh6KvWRlkekPOhqLXCgod9HpMA0jXxb9IoxffJWxHE7yBYtqzkNN6Peg9X68j+JsmCLSp107A6jdeHxuPtnzYGjzR4C1etKo3f+xXAaFmCN50v0VRn0LBmfLYyKU+4Q0murMY0aErNAhv1igFkCYZIMoahxS/2ZDffZ/uuiJqAB16tpNSjuqo1BfdO3Hz7eK4y7PjBLsuyLktc6Dsw99cA=
+    secure:     UCQ8qCXJOJnGUxVHsj+m1NAcGrS02TAK9mS86HzOnpuzcyomw1RrP02f6qgsAYJNPozlm5eQh0puKFAfAvhU1G8Na/pe1SzSXrKlo3OuaaZNp/MQqKj/SVHZt2OHB05YfvkmPStTUSlcwlinMqKiYv4M9oBbyRhE9tJhOOmxcilsY77my3EApPzmp8A6UJftENz5VEs+/e/SDZni+h/skme+7n4TyFUkosDCksyjxq+ShHwr+VxQfDnd7PlLJSTxMFqlIIgTwotVZsGI8kPHuiz/M740kKx7ORGxhqqxSN57AQEEDEPwBta954SO0j/ot+1rhIRatKesDkFw4RnIqW2idVY2WNOkca2KaCN+76H/TKNPMt7ZctS1hZbKWCC7e8xFtnARpsdRnJxe1n7MlZM80vCy0trzsC4ibhU68XkjGiwxQ8QPsuM+NvxieiT71W0N2II4lDEG4f+ZfNapVWb1g3R1RjCZzbrdqyAo/BZMvhBRYj4zfDiQ4xb7RBg0YAIr2Q2f+dttnBF5KL420RTgT6XtxYW55bv2gTKusifao/48Pd/OvHOmth8sv1At4cQUj/drPoChOcZcVGOWwT+Hl8/ZHXy+EASTNOLFRv7+iNjSl6vycN18Ny6ZlqiUirme7ztxqFf47XhZBPeIJYgaj88Gclv5ND7KLytSp7A=
   on:
-    distributions: sdist bdist_wheel
-    repo: glimix/pickle-blosc
+    tags: true
+    repo: limix/pandas-plink
+    banch: master
+    python: 3.6

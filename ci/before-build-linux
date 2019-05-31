@@ -9,3 +9,17 @@ fi
 
 curl -O https://cmake.org/files/v3.4/cmake-3.4.3-Linux-$TAG.sh
 bash cmake-3.4.3-Linux-$TAG.sh --skip-license --prefix=/
+
+# Compile and install blosc
+wget https://github.com/Blosc/c-blosc/archive/v1.16.3.tar.gz
+tar xzf v1.16.3.tar.gz
+
+pushd c-blosc-1.16.3
+
+mkdir build
+cd build
+cmake ..
+sudo cmake --build . --target install
+sudo ldconfig
+
+popd

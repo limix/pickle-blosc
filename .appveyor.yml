@@ -1,6 +1,7 @@
 environment:
-  PKG_NAME: pandas_plink
+  PKG_NAME: pickle_blosc
   CIBW_SKIP: cp27-* cp33-* cp34-* cp35-*
+  CIBW_BEFORE_BUILD_WINDOWS: call ci\before-build-win.bat
   CIBW_TEST_COMMAND: "python -c \"import %PKG_NAME%; import sys; sys.exit(%PKG_NAME%.test())\""
 
 install:

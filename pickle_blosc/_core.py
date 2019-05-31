@@ -39,9 +39,20 @@ def unpickle(filepath):
         Unpickled object.
     """
     arr = []
+    buffsize = blosc.MAX_BUFFERSIZE
     with open(filepath, "rb") as f:
-        carr = f.read(blosc.MAX_BUFFERSIZE)
-        while len(carr) > 0:
+        while buffsize > 0:
+            try:
+                carr = f.read(buffsize)
+            except OverflowError:
+                buffsize = buffsize // 2
+                continue
+
+            if len(carr) == 0:
+                break
             arr.append(blosc.decompress(carr))
-            carr = f.read(blosc.MAX_BUFFERSIZE)
+
+    if buffsize == 0:
+        raise RuntimeError("Could not determine a buffer size.")
+
     return pkl.loads(b"".join(arr))

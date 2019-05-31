@@ -24,4 +24,4 @@ ldconfig
 
 popd
 
-export BLOSC_DIR=/usr/local/
+export 

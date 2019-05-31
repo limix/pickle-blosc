@@ -6,23 +6,24 @@ env:
   - CIBW_SKIP="cp27-* cp34-* cp35-*"
   - CIBW_BEFORE_BUILD_LINUX=ci/before-build-linux
   - CIBW_BEFORE_BUILD_MACOS=ci/before-build-macos
+  - CIBW_ENVIRONMENT_LINUX="BLOSC_DIR=/usr/local/"
   - CIBW_TEST_COMMAND="python -c \"import $PKG_NAME; import sys; sys.exit($PKG_NAME.test())\""
 matrix:
   include:
-    - sudo: required
-      services:
-        - docker
-    - os: osx
-      language: generic
-      before_install:
-        - HOMEBREW_NO_AUTO_UPDATE=1 brew unlink python2
-        - HOMEBREW_NO_AUTO_UPDATE=1 brew install python3 zlib
-        - export PATH=$(brew --prefix)/bin:$(brew --prefix)/sbin:$PATH
-        - export PATH="/usr/local/opt/python/libexec/bin:$PATH"
-        - ln -s $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
-        - ln -s $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
-        - hash -r
-        - python -m pip install --upgrade pip setuptools wheel
+  - sudo: required
+    services:
+    - docker
+  - os: osx
+    language: generic
+    before_install:
+    - HOMEBREW_NO_AUTO_UPDATE=1 brew unlink python2
+    - HOMEBREW_NO_AUTO_UPDATE=1 brew install python3 zlib
+    - export PATH=$(brew --prefix)/bin:$(brew --prefix)/sbin:$PATH
+    - export PATH="/usr/local/opt/python/libexec/bin:$PATH"
+    - ln -s $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
+    - ln -s $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
+    - hash -r
+    - python -m pip install --upgrade pip setuptools wheel
 addons:
   apt:
     packages:
@@ -57,3 +58,13 @@ script:
     python -m pip install twine
     python -m twine upload --skip-existing wheelhouse/*
   fi
+deploy:
+  provider: pypi
+  user: dhorta
+  password:
+    secure: TkwkYg6wjyUfi4achB9Bl5UD+m4381BnDIp+ZBd6puaQcIIgOXdMpk9cSoHzDxIFs53Ntb7Nfi2c5QRegbOR/Zl80L2MvvPDOIFHkqGJtPPAiJnUKwAvQz3b50N/uBV7DqUws+Hf8PEdfE21S+BLDsmyFtNnoxfFtBrXnQvDYwz3wP8yDMtX8z8aos4zFry5WIn++STF/vmcLkayWDrG+uSIebXAMgJuU6U3rU8ZrjAJUtQBQ/LQ5Vlc6iCzSsadc9ijyKS3q9t7yrAHW3AHrJewPJEm785SO244M1t2QNMXXoJKUi1tFy8jJBvc27v4M48gYGToOm6YZStHlUYT8BzAlfPgPYSGb+Ko8Bmu+HZnssv/HsBrgE6B+SFVkokkY6d1F06TGNslbo+xLysgKZZSM5Tq9k6rNHOiXdgSOE31pZiipnoruFkKfIbucF1wl1XmrLDgHcTkkGi41NOL9eYdPh+zMYxMOx/A+USdGBjSyWfQZ03+GuvMQ4Otuy5Q+RC8pLAViXIlKvO91JwdCKD2VnBXyPwZPS0hKr6+BzUUzJfH5T4wLGMBPb1el/7CQ0erF2DhPq6Xl3TzNsy8LDcWDvX1HWUwx6Q32pdzvjpABjZmBS5uhdfRDHwg6pagdviCh79MGOTLrpgQPKYiby5jRhY3Oenf1MrqID9jQik=
+  on:
+    tags: true
+    repo: limix/pickle-blosc
+    banch: master
+    python: 3.6

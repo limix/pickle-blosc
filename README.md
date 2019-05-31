@@ -1,7 +1,6 @@
 # pickle-blosc
 
-[![PyPI-License](https://img.shields.io/pypi/l/pickle-blosc.svg?style=flat-square)](https://pypi.python.org/pypi/pickle-blosc/)
-[![PyPI-Version](https://img.shields.io/pypi/v/pickle-blosc.svg?style=flat-square)](https://pypi.python.org/pypi/pickle-blosc/) [![Anaconda-Version](https://anaconda.org/conda-forge/pickle-blosc/badges/version.svg)](https://anaconda.org/conda-forge/pickle-blosc) [![Anaconda-Downloads](https://anaconda.org/conda-forge/pickle-blosc/badges/downloads.svg)](https://anaconda.org/conda-forge/pickle-blosc)
+[![Travis](https://img.shields.io/travis/com/limix/pickle-blosc.svg?style=flat-square&label=linux%20%2F%20macos%20build)](https://travis-ci.com/limix/pickle-blosc) [![AppVeyor](https://img.shields.io/appveyor/ci/Horta/pickle-blosc.svg?style=flat-square&label=windows%20build)](https://ci.appveyor.com/project/Horta/pickle-blosc)
 
 Read and write Pickle files using Blosc compression.
 

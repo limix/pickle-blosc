@@ -44,7 +44,7 @@ def unpickle(filepath):
         while buffsize > 0:
             try:
                 carr = f.read(buffsize)
-            except OverflowError:
+            except (OverflowError, MemoryError):
                 buffsize = buffsize // 2
                 continue
 
